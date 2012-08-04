@@ -23,7 +23,7 @@ class basicFmodExSoundPlayerApp : public AppBasic {
 
 void basicFmodExSoundPlayerApp::setup()
 {
-	player.loadSound( loadResource( "1085.mp3" ));
+	player.loadSound( getAssetPath( "1085.mp3" ).string() );
 	player.setVolume(0.75f);
 	player.setLoop(true);
 	player.play();

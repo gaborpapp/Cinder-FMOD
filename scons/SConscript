@@ -1,0 +1,36 @@
+Import('env')
+
+_INCLUDES = [Dir('../libs/include').abspath, Dir('../src').abspath]
+
+_SOURCES = ['Fmodex3DSoundPlayer.cpp', 'FmodexPlayer.cpp']
+
+_SOURCES = [File('../src/' + s).abspath for s in _SOURCES]
+
+_LIBS = ['fmodex']
+
+if env['PLATFORM'] == 'darwin':
+	_LIBPATH = [Dir('../libs/lib/osx').abspath]
+else:
+	_LIBPATH = [] # TODO
+
+env.Append(APP_SOURCES = _SOURCES)
+env.Append(CPPPATH = _INCLUDES)
+env.Append(LIBS = _LIBS)
+env.Append(LIBPATH = _LIBPATH)
+
+# install_name_tool_hack
+import os, atexit
+def install_name_tool():
+	os.system('install_name_tool %s -change ./libfmodex.dylib @executable_path/libfmodex.dylib'
+			% env['APP_TARGET'] + '.app/Contents/MacOS/' + env['APP_TARGET'])
+
+# copy fmodex dylib to app
+if (env['PLATFORM'] == 'darwin') and ('APP_TARGET' in env):
+	dylib = '/libfmodex.dylib'
+	fout = env['APP_TARGET'] + '.app/Contents/MacOS/' + dylib
+	fin = _LIBPATH[0] + dylib
+	Command('#' + fout, fin, Copy(fout, fin))
+
+	atexit.register(install_name_tool)
+
+Return('env')

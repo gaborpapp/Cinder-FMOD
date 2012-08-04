@@ -1,0 +1,11 @@
+env = Environment()
+
+env['APP_TARGET'] = 'basicFmodExSoundPlayerApp'
+env['APP_SOURCES'] = ['basicFmodExSoundPlayerApp.cpp']
+env['ASSETS'] = ['1085.mp3', 'Violet.mp3',
+					'beat.wav', 'synth.wav']
+
+# Cinder-FMOD
+env = SConscript('../../../scons/SConscript', exports = 'env')
+
+SConscript('../../../../../scons/SConscript', exports = 'env')
